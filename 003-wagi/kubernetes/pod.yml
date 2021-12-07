@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-wagi
+  annotations:
+    alpha.wagi.krustlet.dev/default-host: "0.0.0.0:3001"
+    alpha.wagi.krustlet.dev/modules: |
+      {
+        "wagi": {"route": "/"}
+      }
+spec:
+  hostNetwork: true
+  nodeSelector:
+    kubernetes.io/arch: wasm32-wagi
+  containers:
+  - name: wagi
+    image: wasmftw.azurecr.io/hello-wagi:1.0.0
+    imagePullPolicy: Always
+  tolerations:
+    - key: "node.kubernetes.io/network-unavailable"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "kubernetes.io/arch"
+      operator: "Equal"
+      value: "wasm32-wagi"
+      effect: "NoExecute"
+    - key: "kubernetes.io/arch"
+      operator: "Equal"
+      value: "wasm32-wagi"
+      effect: "NoSchedule"
